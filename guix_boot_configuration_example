@@ -1,0 +1,19 @@
+ ;; Assuming /dev/sda is the target hard disk, and "GuixSD"
+   ;; is the label of the target root file system.
+     (bootloader (grub-configuration (device "/dev/sda")
+                                       (grub grub-efi)))
+				         ;; (bootloader (bootloader-configuration (bootloader grub-efi-bootloader)
+					   ;;                                       (device "/dev/sda")))
+					   ;;                                (menu-entries
+					   ;;                                  (list
+					   ;;                                    (menu-entry
+					   ;;                                      (label "Parabola GNU/Linux-libre")
+					   ;;                                      ;; see Arch Wiki / GRUB / Encrypted GNU/Linux menuentry to see what is missing here
+					   ;;                                      (linux "/boot/vmlinuz-linux-libre")
+					   ;;                                      (linux-arguments '("cryptdevice=UUID=e269b169-073a-49f4-a03f-1a34d88384f8:Main" "root=/dev/mapper/Main-rootvol resume=/dev/mapper/Main-swapvol" "rw" "add_efi_memmap" "initrd=/initramfs-linux-libre.img" "init=/lib/systemd/systemd"))
+					   ;;                                      (initrd "/boot/initramfs-linux-libre.img"))
+					   ;;                                    (menu-entry
+					   ;;                                      (label "Parabola GNU/Linux-libre LTS")
+					   ;;                                      (linux "/boot/vmlinuz-linux-libre-lts")
+					   ;;                                      (linux-arguments '("cryptdevice=UUID=e269b169-073a-49f4-a03f-1a34d88384f8:Main" "root=/dev/mapper/Main-rootvol" "resume=/dev/mapper/Main-swapvol" "rw" "add_efi_memmap" "initrd=/initramfs-linux-libre-lts.img" "init=/lib/systemd/systemd"))
+					   ;;                                      (initrd "/boot/initramfs-linux-libre-lts.img"))))))
