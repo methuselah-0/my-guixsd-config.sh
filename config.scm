@@ -191,51 +191,23 @@
 ;;         (ssl-certificate-key "/etc/letsencrypt/live/server1.selfhosted.xyz/privkey.pem")
          (raw-content %custom-ssl-rules)
          )))))
-(define %emacs-packages
-  (cons*
-   emacs
-   emacs-ag
-   emacs-auto-complete
-   emacs-bash-completion
-   emacs-scheme-complete
-   emacs-company
-   emms ;; emacs-emms
-   emacs-emms-player-mpv
-   emacs-guix
-   emacs-js2-mode
-   emacs-lispy
-   emacs-nginx-mode
-   emacs-org
-   emacs-org2web
-   emacs-org-bullets
-   emacs-org-contrib
-   org-tree-slide ;; emacs-org-tree-slide
-   paredit ;; emacs-paredit
-   emacs-php-mode
-   emacs-pdf-tools
-   emacs-rainbow-delimiters
-   emacs-rudel
-   emacs-scheme-complete
-   emacs-w3m
-   emacs-wget
-   emacs-xmlgen))
-;; (certbot-configuration
-;;  (email "hostmaster@selfhosted.xyz")
-;;  (webroot "/srv/http/localhost/")
-;;  (certificates
-;;   (list
-;;    (certificate-configuration
-;;     (domains '("server1.selfhosted.xyz"))
-;;     (deploy-hook %nginx-deploy-hook))
-;;    ;; (certificate-configuration
-;;    ;;  (domains '("server1.selfhosted.xyz"))
-;;    ))))
-;;                 (service certbot-service-type
-;;                          (certbot-configuration
-;;                           ;; Replace these with your own domain and web root
-;;                          (hosts (list "server1.selfhosted.xyz"))
-;;                           (webroot "/srv/http/localhost/")
-;;                           (email "hostmaster@selfhosted.xyz")))
+(define %public-repositories
+  '("my-guix-config"
+    "renew-tls-tlsa.sh"
+    "nextcloud-suite.sh"
+    "misc"
+    "qemu-scripts.sh"))
+
+;; I had to do chmod 750/640 (+x for hooks), chown -R git:git-daemon on
+;; /var/lib/git/repositories
+
+(define %git-daemon-config
+  (git-daemon-configuration
+   (base-path "/var/lib/git/repositories")
+   (export-all? #t) ; export all whitelisted repos
+   (whitelist (map (lambda (repository)
+                     (string-append "/var/lib/git/repositories/" repository))
+                   %public-repositories))))
 
 (operating-system
  (host-name "server1")
@@ -282,246 +254,78 @@
                 (supplementary-groups '("wheel" "netdev"
                                         "audio" "video"
 					"kvm" "lp")) ;; users need to be in the LP group to access dbus-services (e.g. wicd)
-                (home-directory "/home/user1"))
+                (home-directory "/home/user1")
+                (user-account
+                 (name "vmail")
+                 (comment "vmail")
+                 (group "nogroup")
+                 (home-directory "/var/lib/vmail"))
+                (user-account
+                 (name "git")
+                 (comment "git")
+                 (group "git-daemon") ; so to give read access to git-daemon
+                 (home-directory "/var/lib/git")))
                %base-user-accounts))
 
   ;; This is where we specify system-wide packages.
   (packages (cons* 
-	     ;; Utils
-	     abduco
-             aircrack-ng
-	     alpine
-	     alsa-lib
-	     alsa-plugins
-	     alsa-utils ;; Audio & Video
-	     arandr
-	     audit
-	     autoconf
-	     automake
-	     autobuild ; autotools	     
-	     bash-completion
-	     bc
-	     beep
-	     binutils ; base	     	     
-	     bridge-utils ; virtualization, brctl
-	     btrfs-progs
-	     ;;bzip2 ; "conflicting entry"
-	     byobu ;; screen enhanced
-	     cl-stumpwm	     
-	     compton
-	     conkeror
-	     cpulimit	     
-	     cryptsetup ; mounting various file-systems etc
-	     curl             
-	     dconf-editor
-	     dnsmasq ; virtualization	     
-	     dmenu
-	     dvtm
-	     dzen
-	     ;; Office
-             emacs
-             emacs-ag
-             emacs-auto-complete
-             emacs-bash-completion
-             emacs-scheme-complete
-             emacs-company
-             emms ;; emacs-emms
-             emacs-emms-player-mpv
-             emacs-guix
-             emacs-js2-mode
-             emacs-lispy
-             emacs-nginx-mode
-             emacs-org
-             emacs-org2web
-             emacs-org-bullets
-             emacs-org-contrib
-             org-tree-slide ;; emacs-org-tree-slide
-             paredit ;; emacs-paredit
-             emacs-php-mode
-             emacs-pdf-tools
-             emacs-rainbow-delimiters
-             emacs-rudel
-             emacs-scheme-complete
-             emacs-w3m
-             emacs-wget
-             emacs-xmlgen
+	     ;; Login
+	     sddm
+	     wayland
+             ;; Mounting various file-systems etc             
+	     btrfs-progs             
+	     cryptsetup
 	     exfat-utils
-	     enlightenment
-	     fbcat
 	     fuse
 	     fuse-exfat
-	     ;; diffutils
-	     file ; findutils
-	     flashrom ; admin tools
-	     fbida ; framebuffer graphics
-	     ffmpeg ;; Audio fromat converter
-	     flac ;; flac audio format
-	     ;font-abattis-cantarell
-	     font-anonymous-pro
-	     font-awesome
-	     font-bitstream-vera
-	     font-dejavu
-	     font-fantasque-sans
-	     font-fira-mono
-	     font-gnu-freefont-ttf
-	     font-gnu-unifont
-	     font-go
-	     font-google-material-design-icons
-	     font-google-noto
-	     font-google-roboto
-	     font-hack
-	     font-inconsolata
-	     font-liberation
-	     ;font-linux-libertine
-	     font-mathjax
-	     font-rachana
-	     font-tamzen
-	     font-terminus
-	     font-tex-gyre
-	     font-ubuntu
-	     font-un
-	     font-util
-	     fontconfig	     	     
-	     ftgl
-	     ;font-mutt-misc
-	     feh
-	     geiser
-	     git
-	     gnome-tweak-tool
-	     gnupg ;for HTTPS access
+	     sshfs-fuse
+	     gvfs ; user mounts             
+
+             ;; Build stuff
+	     autoconf
+	     automake
+	     autobuild ; autotools
 	     gnu-make
-	     gnutls
-	     ;;guile2.2-gnutls
-	     ;;guile2.2-json
-	     gpgme
-	     graphviz ; pdf tools	     	     
-	     gs-fonts
-	     gvfs ; user mounts
-	     ghc-x11-xft
-	     gcc-toolchain ; xmonad
-	     ghc-xmonad-contrib
-	     ghc
-	     ghc-network
+             
+    	     binutils ; base	     	     
+
+             ;; Office
+	     ftgl
+
+	     gnupg ;for HTTPS access
+	     gnutls ;for HTTPS access
+             
 	     glib
              glibc-locales
 	     glibc-utf8-locales ; locales
 	     ;;gtk2fontsel
-	     gsettings-desktop-schemas
-	     htop	     	     
-	     iptables ; firewall, used for virtualization also
-	     icecat ; browser
-	     icedtea ; browser plugin
-	     ;; enlightenment	     
-	     ;; gajim ; xmpp FIXME
+
 	     gtk+
 	     gtkglext
 	     kbd
-	     ;; kmscon ;; build fails (including on hydra since 2017-12-05)
-	     libgcrypt ; for compiling alock with something (see my-xmonad.sh)
-	     ;;libreoffice ; office suite
-	     libnotify
+
 	     libtool
-	     libxft ; xft fonts
-	     libxfont ; xmonad
-	     linux-pam ; for compiling alock with --enable-pam module
-	     ltrace
-	     lynx
-	     mpv ; Video-player
+
 	     mcron ; Schedule commands		
 	     mesa
 	     mesa-utils
 	     mtools				
-	     mupdf ; pdf tools		
-	     mpd ; music player daemon FIXME
-	     mpd-mpc ; cli for mpd
-	     ncmpcpp ; mpd music daemon, mpd cli, and mpd-client.
+
 	     ncurses ; terminal menus written in C
-             ;;nginx
-             node
 	     nss-certs ; certificates
-	     net-tools
-	     nmap ; check ports etc. - network tool
+
 	     ;; Virtualization
-	     openvpn ; virtualization, mktun
-	     openssh ; SSH access
-             openssl
-	     pinentry
-	     pinentry-tty
-	     pinentry-qt
-	     ;;pinentry-gtk
-	     pulseaudio
-	     ponymix
-	     pavucontrol
-	     perl
-	     python-3.6
-	     python-pycrypto
-	     python2-dateutil
-	     python2-vobject ;;python	     
-	     paredit ; programming tools	     
-	     pavucontrol		;; Audio & Video
+
 	     pkg-config
-	     ;; qemu FIXME
-	     ;; qtox ; tox FIXME
-	     recutils ; location: databases	     	     
-	     rxvt-unicode
-	     rsync ; rsync	     
-	     screen
-	     sddm
-	     setxkbmap
-	     spice ; virtualization. Incompatible with openssl-next
-	     sshfs-fuse
-             strace
 	     ; tar ; "conflicting entry"
-	     ;; terminology ; terminals FIXME
-	     termite ;; wayland-native terminal
-	     texinfo
-	     tree; terminal and console	     	     
-	     unclutter
-	     unzip
-	     vis
 	     ; util-linux, disabled due to "conflicting entries"
-	     vorbis-tools		;; Audio & Video
-	     wayland
-	     weechat
-	     wicd
-             wireshark
-	     wget 	     	     
-	     wpa-supplicant
-	     ;; Desktop
-	     xauth
-	     xbacklight
-	     xclip
-	     xdg-utils
-	     xdotool; xmonad window manager related
-	     xeyes
-	     xfce4-pulseaudio-plugin 		;; Audio & Video	     
-	     ;;xf86-video-qxl FIXME
-	     ;;xf86-video-fbdev	FIXME     
-	     xinit
- 	     xkill
-	     xlsfonts ; font
-	     xmodmap
-	     xmonad ;
-	     ; xmobar ; xmonad	     	     
-	     xorg-server
-	     ;xorg-xfontsel ; font
-	     xrandr
-	     xscreensaver
-	     xsensors
-	     xset ; xorg display server related
-	     xsetroot	     
-	     youtube-dl		;; Audio & Video
-	     zip
 	     %base-packages))
 		
-		;; Server stack
-		; mariadb nginx php letsencrypt
-
   ;; Using the "desktop" services includes 
   ;; the X11 log-in service, networking with Wicd, and more.
   (services (cons* 
              (gnome-desktop-service)
-             (xfce-desktop-service)
+             ;;(xfce-desktop-service)
              (console-keymap-service "sv-latin1")
              ;;(slim-service) ; login screen
              (sddm-service (sddm-configuration
@@ -562,15 +366,15 @@
              (service network-manager-service-type (network-manager-configuration))
              (dbus-service) ; IPC or Inter-Process-Communication. ;; provided by %desktop-services
              (service wpa-supplicant-service-type wpa-supplicant)		
-             (udisks-service) ;; provided by %desktop-services
-             (upower-service) ;; provided by %desktop-services
-             (colord-service) ;; provided by %desktop-services
-             (bluetooth-service) ;; provided by %desktop-services
-             (geoclue-service) ;; provided by %desktop-services
-             (polkit-service) ;; ;; provided by %desktop-services
-             (accountsservice-service) ;; provided by %desktop-services
-             (elogind-service #:config (elogind-configuration (handle-lid-switch 'ignore))) ;; provided by %desktop-services
-             (ntp-service #:allow-large-adjustment? #t) ;; network time protocol ;; provided by %desktop-services
+             (udisks-service) ;; also provided by %desktop-services
+             (upower-service) ;; also provided by %desktop-services
+             (colord-service) ;; also provided by %desktop-services
+             (bluetooth-service) ;; also provided by %desktop-services
+             (geoclue-service) ;; also provided by %desktop-services
+             (polkit-service) ;; ;; also provided by %desktop-services
+             (accountsservice-service) ;; also provided by %desktop-services
+             (elogind-service #:config (elogind-configuration (handle-lid-switch 'ignore))) ;; also provided by %desktop-services
+             (ntp-service #:allow-large-adjustment? #t) ;; network time protocol ;; also provided by %desktop-services
              %base-services)) ; desktop services provide lots of default services.
   ;;	    %desktop-services )) ; desktop services provide lots of default services.		
   
