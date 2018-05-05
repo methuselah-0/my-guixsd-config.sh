@@ -121,7 +121,8 @@
    "gs-fonts"
    "libxft" ; xft fonts
    "ghc-x11-xft"
-   "libxfont" ; xmonad   
+   "libxfont" ; xmonad
+   "ftgl" ; uses Freetype2 to simplify rendering fonts in OpenGL applications
    ))
 
 (define messaging-packages
@@ -146,6 +147,7 @@
    "mupdf" ; pdf tools   
    "openssh" ; SSH access
    "openssl@1.0.2n" ; 1.1.0h version is incompatible with the spice package
+   "pkg-config"
    "pinentry"
    "pinentry-tty"
    "pinentry-qt"
@@ -214,6 +216,8 @@
    "spice" ;; virtualization. Incompatible with openssl-next
    ;; Server stack packages:
    ;; mariadb nginx php letsencrypt
+   "mesa" ;; graphics
+   "mesa-utils" ;; graphics
    ))
 (define web-packages
   (list

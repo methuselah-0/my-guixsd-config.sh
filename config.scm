@@ -17,114 +17,36 @@
 	(ice-9 ftw)
 	(guix monads))
 (use-service-modules
-        admin
-	audio
-        base
-        certbot
-	cups
-	dbus
-	desktop
-        mcron
-	networking
-	sddm
-	ssh
-        version-control
-	web
-        xorg ; contained in service-module desktop if using that
-	)
+ admin
+ audio
+ base
+ certbot
+ cups
+ dbus
+ desktop
+ mcron
+ networking
+ sddm
+ ssh
+ version-control
+ web
+ xorg ; contained in service-module desktop if using that
+ )
 (use-package-modules
-        abduco
-        admin
-	algebra ; for bc package
-	autotools
-	bash	
-        base
-	certs ; https etc.
-	commencement ; gcc-toolchain	
-	compression
-	compton
-	conkeror
-	cryptsetup
-	curl
-	databases ; recsel command	
-	disk
-	display-managers ;; sddm
-	dns ; dnsmasq for virtualization
-	dvtm ;; terminal dynamic window manager
-	emacs
-	enlightenment	
-	file
-        flashing-tools ; for flashrom to configure grub in libreboot.	
-	fonts
-	fontutils
-	freedesktop ; xdg-utils, wayland
-	gawk
-	;geiser 		
-	ghostscript
-	;git
-	gl ; for mesa and mesa-utils	
-	glib
-	gnome
-	gnupg ; https etc
-	gnuzilla
-	graphviz
-	gtk	
-	guile
-	haskell
-	image-viewers
-	irc
-	java
-	javascript	
-	;; Terminal & Console
-	linux ; inotify-tools
-	libreoffice
-	lisp
-	;; Utils
-	mail
-	messaging ; for qtox and gajim	
-	mpd
-	mtools
-	ncurses
-        networking ;; aircrack-ng
-        node ;; npm to install tern for company-tern for javascript completion in emacs
-	pkg-config
-	;; Desktop & Office
-	pdf
-	perl
-	;; Messaging
-	;; Audio & Video
-	pulseaudio ; pavucontrol
-	;;pulseaudio-alsa
-	python
-        python-crypto
-	;; databases web php for mariadb nginx and php respectively.
-	;; Virtualization
-	rsync
-	ruby			
-	screen
-	shells
-	ssh
-	suckless ; suckless for dmenu and more 
-	terminals
-	texinfo
-	text-editors ;; for vis package
-	time ; time is for python2-dateutil
-	tls ; for gnutls etc.
-	version-control	
-	virtualization
-	video ; ffmpeg mpv youtube-dl
-	vpn
-        ;;web
-	web-browsers
-	wicd
-	wget	
-	wm ; ghc-xmonad-contrib	
-	spice
-	xdisorg
-	xfce	
-	xiph ; vorbis-tools
-	xorg
-	)
+ admin
+ autotools ;; autoconf and other build-packages
+ bash	
+ certs ; https etc.
+ cryptsetup
+ display-managers ;; sddm
+ freedesktop ; xdg-utils, wayland
+ gnome ;; gvfs for user-mounts
+ gnupg ; https etc
+ linux ; btrfs-progs, inotify-tools
+ mtools ;; exfat-utils
+ suckless ; suckless for slock screensaver service, dmenu and more 
+ tls ; for gnutls etc.
+ )
 (define updatedb-job
   ;; Run 'updatedb' at 3AM every day.  Here we write the
   ;; job's action as a Scheme procedure.
@@ -292,33 +214,29 @@
     	     binutils ; base	     	     
 
              ;; Office
-	     ftgl
 
 	     gnupg ;for HTTPS access
 	     gnutls ;for HTTPS access
              
-	     glib
+;	     glib
              glibc-locales
 	     glibc-utf8-locales ; locales
 	     ;;gtk2fontsel
 
-	     gtk+
+;	     gtk+
 	     gtkglext
 	     kbd
 
 	     libtool
 
-	     mcron ; Schedule commands		
-	     mesa
-	     mesa-utils
+;;	     mcron ; Schedule commands		
 	     mtools				
 
-	     ncurses ; terminal menus written in C
+	     ;; ncurses ; terminal menus written in C
 	     nss-certs ; certificates
 
 	     ;; Virtualization
 
-	     pkg-config
 	     ; tar ; "conflicting entry"
 	     ; util-linux, disabled due to "conflicting entries"
 	     %base-packages))
