@@ -30,7 +30,7 @@
    "libgcrypt" ; for compiling alock with something (see my-xmonad.sh)
    "linux-pam" ; for compiling alock with --enable-pam module, xmonad
    "libnotify"
-   ;;libreoffice ; office suite   
+   "libreoffice" ; office suite   
    ;;"dmenu"	  
    ;;"dzen"
    ;;"feh"

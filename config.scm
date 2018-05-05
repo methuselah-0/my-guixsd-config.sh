@@ -246,15 +246,17 @@
                    #:extra-modules '("btrfs")
                    rest)))
   (kernel-arguments (list "modprobe.blacklist=pcspkr,snd_pcsp")) ;; disable annoying console beeps.
+  (groups (cons* (user-group (name "git-daemon"))
+                 %base-groups))
   
-  (users (cons (user-account
-                (name "user1")
-                (comment "user1")
-                (group "users")
-                (supplementary-groups '("wheel" "netdev"
-                                        "audio" "video"
-					"kvm" "lp")) ;; users need to be in the LP group to access dbus-services (e.g. wicd)
-                (home-directory "/home/user1")
+  (users (cons* (user-account
+                 (name "user1")
+                 (comment "user1")
+                 (group "users")
+                 (supplementary-groups '("wheel" "netdev"
+                                         "audio" "video"
+                                         "kvm" "lp")) ;; users need to be in the LP group to access dbus-services (e.g. wicd)
+                 (home-directory "/home/user1"))
                 (user-account
                  (name "vmail")
                  (comment "vmail")
@@ -264,9 +266,9 @@
                  (name "git")
                  (comment "git")
                  (group "git-daemon") ; so to give read access to git-daemon
-                 (home-directory "/var/lib/git")))
-               %base-user-accounts))
-
+                 (home-directory "/var/lib/git"))
+                %base-user-accounts))
+  
   ;; This is where we specify system-wide packages.
   (packages (cons* 
 	     ;; Login
@@ -337,10 +339,11 @@
              ;;(dhcp-client-service)
                                         ;(remove (lambda (service)
 					;    (eq? (service-kind service) wicd-service-type))
+             ;;mpd needs started as normal user. herd stop mpd as root first (plus create ~/.mpd dir).
              (service mpd-service-type
                       (mpd-configuration
-                       (user "user1")
-                       (port "6666")))
+                       (user "user1") ;; default is mpd
+                       (port "6600"))) ;; 6600 is default
              (gpm-service)
              (screen-locker-service slock "slock")
              ;;		(lsh-service #:port-number 2222)
