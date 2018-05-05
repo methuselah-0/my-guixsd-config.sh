@@ -196,13 +196,15 @@
 	     ;; Login
 	     sddm
 	     wayland
+             
              ;; Mounting various file-systems etc             
-	     btrfs-progs             
-	     cryptsetup
+	     btrfs-progs ;; btrfs filesystem utilities
+	     cryptsetup ;; luks-encrypted volumes
 	     exfat-utils
 	     fuse
 	     fuse-exfat
 	     sshfs-fuse
+	     mtools  ;; access ms-dos disks etc.             
 	     gvfs ; user mounts             
 
              ;; Build stuff
@@ -210,35 +212,19 @@
 	     automake
 	     autobuild ; autotools
 	     gnu-make
-             
-    	     binutils ; base	     	     
+             binutils
 
-             ;; Office
+             ;; SSL, HTTPS access
+	     nss-certs ; certificates             
+	     gnupg
+	     gnutls
 
-	     gnupg ;for HTTPS access
-	     gnutls ;for HTTPS access
-             
-;	     glib
+             ;; Locale
              glibc-locales
-	     glibc-utf8-locales ; locales
-	     ;;gtk2fontsel
+	     glibc-utf8-locales
 
-;	     gtk+
-	     gtkglext
-	     kbd
-
+	     kbd ;; loadkeys command etc.
 	     libtool
-
-;;	     mcron ; Schedule commands		
-	     mtools				
-
-	     ;; ncurses ; terminal menus written in C
-	     nss-certs ; certificates
-
-	     ;; Virtualization
-
-	     ; tar ; "conflicting entry"
-	     ; util-linux, disabled due to "conflicting entries"
 	     %base-packages))
 		
   ;; Using the "desktop" services includes 

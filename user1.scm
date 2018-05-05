@@ -218,6 +218,7 @@
    ;; mariadb nginx php letsencrypt
    "mesa" ;; graphics
    "mesa-utils" ;; graphics
+   "gtkglext" ;; make gtk-widgets OpenGL compatible, etc.
    ))
 (define web-packages
   (list
