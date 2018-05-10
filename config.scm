@@ -1,21 +1,41 @@
+;; -*- geiser-scheme-implementation: guile -*-
 ;; This is an operating system configuration template
 ;; for a "desktop" setup with GNOME and Xfce where the
 ;; root partition is encrypted with LUKS.
 
 (use-modules 
-	(gnu)
-        (gnu system nss) ; nameservice switch
-	(guix build-system gnu)
-	(guix build-system haskell)
-	(guix build utils)
-	(guix gexp)
-	(guix modules)
-	(guix packages)
-	(guix store)	
-	(srfi srfi-1) ; for remove function "alist-delete"
-	(srfi srfi-26)
-	(ice-9 ftw)
-	(guix monads))
+ (gnu)
+ (gnu system nss) ; nameservice switch
+ (guix build-system ant)
+ (guix build-system asdf)
+ (guix build-system cargo)
+ (guix build-system cmake)
+ (guix build-system dub)
+ (guix build-system emacs)
+ (guix build-system font)       
+ (guix build-system gnu)
+ (guix build-system go)
+ (guix build-system haskell)
+ (guix build-system glib-or-gtk)
+ (guix build-system meson)              
+ (guix build-system minify)
+ (guix build-system ocaml)
+ (guix build-system python)                
+ (guix build-system perl)
+ (guix build-system r)
+ (guix build-system ruby)
+ (guix build-system scons)
+ (guix build-system texlive)                        
+ (guix build-system waf)
+ (guix build utils)
+ (guix gexp)
+ (guix modules)
+ (guix packages)
+ (guix store)
+ (srfi srfi-1) ; for remove function "alist-delete"
+ (srfi srfi-26)
+ (ice-9 ftw)
+ (guix monads))
 (use-service-modules
  admin
  audio
@@ -39,10 +59,14 @@
  certs ; https etc.
  cryptsetup
  display-managers ;; sddm
+ enlightenment 
+ fonts
  freedesktop ; xdg-utils, wayland
+ ghostscript ;; gs-fonts package
  gnome ;; gvfs for user-mounts
  gnupg ; https etc
  linux ; btrfs-progs, inotify-tools
+ javascript ;; font-mathjax
  mtools ;; exfat-utils
  suckless ; suckless for slock screensaver service, dmenu and more 
  tls ; for gnutls etc.
@@ -114,7 +138,7 @@
          (raw-content %custom-ssl-rules)
          )))))
 (define %public-repositories
-  '("my-guix-config"
+  '("my-guixsd-config"
     "renew-tls-tlsa.sh"
     "nextcloud-suite.sh"
     "misc"
@@ -130,6 +154,12 @@
    (whitelist (map (lambda (repository)
                      (string-append "/var/lib/git/repositories/" repository))
                    %public-repositories))))
+(define %my-special-files
+  `(("/bin/sh" ,(file-append bash "/bin/sh"))
+    ("/bin/bash" ,(file-append bash "/bin/bash"))
+    ;; gitolite update hook needs it
+;;    ("/usr/bin/perl" ,(file-append perl "/bin/perl"))
+    ("/usr/bin/env" ,(file-append coreutils "/bin/env"))))
 
 (operating-system
  (host-name "server1")
@@ -167,7 +197,7 @@
             (apply base-initrd file-systems
                    #:extra-modules '("btrfs")
                    rest)))
-  (kernel-arguments (list "modprobe.blacklist=pcspkr,snd_pcsp")) ;; disable annoying console beeps.
+  (kernel-arguments (list "modprobe.blacklist=pcspkr,snd_pcsp" "iomem=relaxed")) ;; disable annoying console beeps. enable access to /dev/mem for the flashrom tool
   (groups (cons* (user-group (name "git-daemon"))
                  %base-groups))
   
@@ -177,7 +207,7 @@
                  (group "users")
                  (supplementary-groups '("wheel" "netdev"
                                          "audio" "video"
-                                         "kvm" "lp")) ;; users need to be in the LP group to access dbus-services (e.g. wicd)
+                                         "kvm" "lp")) ;; users need to be in the LP group to access dbus-services (e.g. wicd, bluetooth)
                  (home-directory "/home/user1"))
                 (user-account
                  (name "vmail")
@@ -190,13 +220,55 @@
                  (group "git-daemon") ; so to give read access to git-daemon
                  (home-directory "/var/lib/git"))
                 %base-user-accounts))
-  
+    
   ;; This is where we specify system-wide packages.
   (packages (cons* 
-	     ;; Login
+	     ;; Login screen
 	     sddm
 	     wayland
+             enlightenment
+
+             ;; Fonts are defined in user configs instead
+             ;; font-bitstream-vera
+             ;; font-bitstream-vera
+             ;; font-dejavu
+             ;; font-gnu-freefont-ttf
+             ;; font-gnu-unifont
+             ;; gs-fonts
+             ;; font-hack ;; glyphs             
+             ;; font-terminus
+             ;; font-cantarell ;; font-abattis-cantarell
+             ;; font-anonymous-pro
+             ;; font-awesome
              
+             ;; font-fantasque-sans
+             ;; font-fira-mono
+             ;; font-go
+             ;; font-google-material-design-icons
+             ;; font-google-noto
+             ;; font-google-roboto
+             
+             ;; font-inconsolata
+             ;; font-liberation
+             ;; font-linuxlibertine ;; font-linux-libertine
+             ;; font-mathjax
+             ;; font-rachana
+             ;; font-tamzen
+             
+             ;; font-tex-gyre
+             ;; font-ubuntu
+             ;; font-un
+             
+             ;; xorg fonts
+;;             font-util
+;;             fontconfig
+;;             font-mutt-misc
+;;             libxft ; xft fonts
+;;             ghc-x11-xft
+;;             libxfont ; xmonad
+             ;; "ftgl" ; uses Freetype2 to simplify rendering fonts in OpenGL applications
+             
+    
              ;; Mounting various file-systems etc             
 	     btrfs-progs ;; btrfs filesystem utilities
 	     cryptsetup ;; luks-encrypted volumes
@@ -205,7 +277,7 @@
 	     fuse-exfat
 	     sshfs-fuse
 	     mtools  ;; access ms-dos disks etc.             
-	     gvfs ; user mounts             
+	     gvfs ; user mounts
 
              ;; Build stuff
 	     autoconf
@@ -225,6 +297,41 @@
 
 	     kbd ;; loadkeys command etc.
 	     libtool
+
+   ;; "font-abattis-cantarell"
+   ;; "font-anonymous-pro"
+   ;; "font-awesome"
+   ;; "font-bitstream-vera"
+   ;; "font-dejavu"
+   ;; "font-fantasque-sans"
+   ;; "font-fira-mono"
+   ;; "font-gnu-freefont-ttf"
+   ;; "font-gnu-unifont"
+   ;; "font-go"
+   ;; "font-google-material-design-icons"
+   ;; "font-google-noto"
+   ;; "font-google-roboto"
+   ;; "font-hack"
+   ;; "font-inconsolata"
+   ;; "font-liberation"
+   ;; ;;"font-linux-libertine"
+   ;; "font-mathjax"
+   ;; "font-rachana"
+   ;; "font-tamzen"
+   ;; "font-terminus"
+   ;; "font-tex-gyre"
+   ;; "font-ubuntu"
+   ;; "font-un"
+   ;; "font-util"
+   ;; "fontconfig"
+   ;; "font-mutt-misc"
+   ;; "gs-fonts"
+   ;; "libxft" ; xft fonts
+   ;; "ghc-x11-xft"
+   ;; "libxfont" ; xmonad
+   ;; "ftgl" ; uses Freetype2 to simplify rendering fonts in OpenGL applications
+
+             
 	     %base-packages))
 		
   ;; Using the "desktop" services includes 
@@ -249,13 +356,14 @@
                        (user "user1") ;; default is mpd
                        (port "6600"))) ;; 6600 is default
              (gpm-service)
+             (service special-files-service-type %my-special-files)
              (screen-locker-service slock "slock")
              ;;		(lsh-service #:port-number 2222)
              (service openssh-service-type
                       (openssh-configuration
                        (port-number 2222)
                        (x11-forwarding? #t)
-                       ))
+                       )) 
              ;; (service sysctl-service-type
              ;; 	 (sysctl-configuration
              ;; 	  (settings '(("net.ipv4.ip_forward" . "1")))))

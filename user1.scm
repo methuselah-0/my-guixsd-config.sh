@@ -1,3 +1,4 @@
+;; -*- geiser-scheme-implementation: guile -*-
 (define audio-video-packages
   (list
    "alsa-lib"
@@ -8,8 +9,7 @@
    "mpd" ; music player daemon FIXME
    "mpd-mpc" ; cli for mpd
    "ncmpcpp" ; mpd music daemon, mpd cli, and mpd-client.   
-   "mpv" ; Video-player
-   
+   "mpv" ; Video-player   
    "pulseaudio"
    "ponymix"
    "pavucontrol"
@@ -78,7 +78,7 @@
    "emacs-org-bullets"
    "emacs-org-contrib"
    "emacs-org-tree-slide" ;; emacs-org-tree-slide
-   "emacs-paredit"        ;; emacs-paredit
+;;   "emacs-paredit"        ;; emacs-paredit
    "emacs-php-mode"
    "emacs-pdf-tools"
    "emacs-rainbow-delimiters"
@@ -91,38 +91,48 @@
 
 (define font-packages
   (list
-   "font-abattis-cantarell"
-   "font-anonymous-pro"
-   "font-awesome"
-   "font-bitstream-vera"
-   "font-dejavu"
-   "font-fantasque-sans"
-   "font-fira-mono"
-   "font-gnu-freefont-ttf"
-   "font-gnu-unifont"
-   "font-go"
-   "font-google-material-design-icons"
-   "font-google-noto"
-   "font-google-roboto"
-   "font-hack"
-   "font-inconsolata"
-   "font-liberation"
-   ;;"font-linux-libertine"
-   "font-mathjax"
-   "font-rachana"
-   "font-tamzen"
-   "font-terminus"
-   "font-tex-gyre"
-   "font-ubuntu"
-   "font-un"
-   "font-util"
-   "fontconfig"
-   "font-mutt-misc"
-   "gs-fonts"
-   "libxft" ; xft fonts
-   "ghc-x11-xft"
-   "libxfont" ; xmonad
-   "ftgl" ; uses Freetype2 to simplify rendering fonts in OpenGL applications
+             ;; System fonts
+             "font-bitstream-vera"
+             "font-dejavu"
+             "font-gnu-freefont-ttf"
+             "font-gnu-unifont"
+             "gs-fonts"
+             "font-hack" ;; glyphs             
+             "font-terminus"
+             "font-abattis-cantarell" ;; font-abattis-cantarell
+             "font-anonymous-pro"
+             "font-awesome"
+             
+             "font-fantasque-sans"
+             "font-fira-mono"
+             "font-go"
+             "font-google-material-design-icons"
+             "font-google-noto"
+             "font-google-roboto"
+             
+             "font-inconsolata"
+             "font-liberation"
+             "font-linuxlibertine" ;; font-linux-libertine
+             "font-mathjax"
+             "font-rachana"
+             "font-tamzen"
+             
+             "font-tex-gyre"
+             "font-ubuntu"
+             "font-un"
+             ;; xorg fonts
+;;             font-util
+;;             fontconfig
+;;             font-mutt-misc
+             ;; "libxft" ;; xft fonts
+             ;; "ghc-x11-xft"
+             ;; "libxfont" ; xmonad
+             ;; "ftgl" ; uses Freetype2 to simplify rendering fonts in OpenGL applications
+
+   
+    "pango"
+    "perl-pango"
+    "cairo"
    ))
 
 (define messaging-packages
@@ -137,8 +147,8 @@
   (list
    "audit"
    "cpulimit"   
-   "flashrom" ; admin tools   
-   "file" ; findutils   
+   "file" ; findutils
+   "gdb" ;; debugging (capture stdout from processes)
    "gpgme"
    "graphviz" ; pdf tools   
    "htop"
@@ -146,7 +156,8 @@
    ;; diffutils
    "mupdf" ; pdf tools   
    "openssh" ; SSH access
-   "openssl@1.0.2n" ; 1.1.0h version is incompatible with the spice package
+;   "openssl@1.0.2n" ; 1.1.0h version is incompatible with the spice package
+;   "openssl" ; spice package provides openssl but older version which should be fine.
    "pkg-config"
    "pinentry"
    "pinentry-tty"
@@ -179,6 +190,8 @@
    "node"   
    "perl"
 ;; "python-3.6"
+;;   "python" ;; is 3.6 version
+   "python@2.7"
    "python-pycrypto"   
    "python2-dateutil"
    "python2-vobject" ;;python   
@@ -199,6 +212,7 @@
    "screen"
    "termite" ;; wayland-native terminal
    "tree" ; terminal and console
+;;   "ttylog" ;; doesn't exist
    "unclutter"   
    "vis"
    ;; terminology ; terminals FIXME             
@@ -218,7 +232,7 @@
    ;; mariadb nginx php letsencrypt
    "mesa" ;; graphics
    "mesa-utils" ;; graphics
-   "gtkglext" ;; make gtk-widgets OpenGL compatible, etc.
+   ;; "gtkglext" ;; make gtk-widgets OpenGL compatible, etc.
    ))
 (define web-packages
   (list
