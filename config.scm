@@ -65,9 +65,10 @@
  ghostscript ;; gs-fonts package
  gnome ;; gvfs for user-mounts
  gnupg ; https etc
+ javascript ;; font-mathjax 
  linux ; btrfs-progs, inotify-tools
- javascript ;; font-mathjax
  mtools ;; exfat-utils
+ perl
  suckless ; suckless for slock screensaver service, dmenu and more 
  tls ; for gnutls etc.
  )
@@ -84,9 +85,9 @@
   ;; The job's action is a shell command.
   #~(job "5 0 * * *"            ;Vixie cron syntax
 	 "guix gc -F 1G"))
-;(define my-screenlocker
-;  #~(job "0 0 0 0 5"
-;	 "
+(define fetch-calendars
+  #~(job "5 * * * *"
+	 "/home/user1/bin/fetch-calendars.pl"))
 (define %nginx-deploy-hook
   (program-file
    "nginx-deploy-hook"
@@ -228,37 +229,6 @@
 	     wayland
              enlightenment
 
-             ;; Fonts are defined in user configs instead
-             ;; font-bitstream-vera
-             ;; font-bitstream-vera
-             ;; font-dejavu
-             ;; font-gnu-freefont-ttf
-             ;; font-gnu-unifont
-             ;; gs-fonts
-             ;; font-hack ;; glyphs             
-             ;; font-terminus
-             ;; font-cantarell ;; font-abattis-cantarell
-             ;; font-anonymous-pro
-             ;; font-awesome
-             
-             ;; font-fantasque-sans
-             ;; font-fira-mono
-             ;; font-go
-             ;; font-google-material-design-icons
-             ;; font-google-noto
-             ;; font-google-roboto
-             
-             ;; font-inconsolata
-             ;; font-liberation
-             ;; font-linuxlibertine ;; font-linux-libertine
-             ;; font-mathjax
-             ;; font-rachana
-             ;; font-tamzen
-             
-             ;; font-tex-gyre
-             ;; font-ubuntu
-             ;; font-un
-             
              ;; xorg fonts
 ;;             font-util
 ;;             fontconfig
@@ -267,7 +237,6 @@
 ;;             ghc-x11-xft
 ;;             libxfont ; xmonad
              ;; "ftgl" ; uses Freetype2 to simplify rendering fonts in OpenGL applications
-             
     
              ;; Mounting various file-systems etc             
 	     btrfs-progs ;; btrfs filesystem utilities
@@ -297,41 +266,8 @@
 
 	     kbd ;; loadkeys command etc.
 	     libtool
+             perl ;; cronjob perl-scripts
 
-   ;; "font-abattis-cantarell"
-   ;; "font-anonymous-pro"
-   ;; "font-awesome"
-   ;; "font-bitstream-vera"
-   ;; "font-dejavu"
-   ;; "font-fantasque-sans"
-   ;; "font-fira-mono"
-   ;; "font-gnu-freefont-ttf"
-   ;; "font-gnu-unifont"
-   ;; "font-go"
-   ;; "font-google-material-design-icons"
-   ;; "font-google-noto"
-   ;; "font-google-roboto"
-   ;; "font-hack"
-   ;; "font-inconsolata"
-   ;; "font-liberation"
-   ;; ;;"font-linux-libertine"
-   ;; "font-mathjax"
-   ;; "font-rachana"
-   ;; "font-tamzen"
-   ;; "font-terminus"
-   ;; "font-tex-gyre"
-   ;; "font-ubuntu"
-   ;; "font-un"
-   ;; "font-util"
-   ;; "fontconfig"
-   ;; "font-mutt-misc"
-   ;; "gs-fonts"
-   ;; "libxft" ; xft fonts
-   ;; "ghc-x11-xft"
-   ;; "libxfont" ; xmonad
-   ;; "ftgl" ; uses Freetype2 to simplify rendering fonts in OpenGL applications
-
-             
 	     %base-packages))
 		
   ;; Using the "desktop" services includes 

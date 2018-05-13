@@ -4,6 +4,7 @@
    "alsa-lib"
    "alsa-plugins"
    "alsa-utils"
+   "espeak"
    "ffmpeg" ;; Audio fromat converter
    "flac" ;; flac audio format
    "mpd" ; music player daemon FIXME
@@ -115,6 +116,7 @@
              "font-linuxlibertine" ;; font-linux-libertine
              "font-mathjax"
              "font-rachana"
+             "font-adobe-source-code-pro"
              "font-tamzen"
              
              "font-tex-gyre"
@@ -149,7 +151,7 @@
    "cpulimit"   
    "file" ; findutils
    "gdb" ;; debugging (capture stdout from processes)
-   "gpgme"
+   ;;"gpgme" ;; currently has dependency that conflicts with libgcrypt
    "graphviz" ; pdf tools   
    "htop"
    ;;bzip2 ; "conflicting entry"
@@ -194,7 +196,8 @@
    "python@2.7"
    "python-pycrypto"   
    "python2-dateutil"
-   "python2-vobject" ;;python   
+   "python2-vobject" ;;python
+   "shellcheck"
    "strace"
    ))
 
