@@ -3,7 +3,7 @@
 # array[key]="$(declare -p another_aray)"
 function f(){
     shopt -s extglob
-    [[ -e /tmp/cve.txt ]] || guix lint -c cve >/tmp/cve.txt
+    [[ -e /tmp/cve.txt ]] || guix lint -c cve 2>/tmp/cve.txt
 
     declare -A Vulns
     while read -ra pkgline
