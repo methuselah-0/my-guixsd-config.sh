@@ -1,7 +1,8 @@
 #!/run/current-system/profile/bin/bash
 #set -x
 # array[key]="$(declare -p another_aray)"
-function f(){
+function guix_health()
+{
     shopt -s extglob
     [[ -e /tmp/cve.txt ]] || guix lint -c cve 2>/tmp/cve.txt
 
@@ -31,17 +32,21 @@ function f(){
     for key in "${!Vulns[@]}"
     do	
 	eval "${Vulns[$key]}"
-	printf '%s' "Package: ${key}@${version[@]}" $'\n'
+	printf '%s' "* Package: ${key}@${version[@]}" $'\n'
+	printf '%s' "** Links" $'\n'
 	for cvelink in "${cvelinks[@]}"
 	do
-	    printf '%s' "Links: ${cvelink}" $'\n'
+	    printf '%s' "${cvelink}" $'\n'
 	done
-	
+
+	printf '%s' "** Vulnerabilities: " $'\n'
      	for val in "${cves[@]}"
      	do	   
-     	    printf '%s' "Vulnerability: " "${val}" $'\n'
+	    printf '%s' "${val}" $'\n'
      	done
      	echo ""
     done    
 }
-f
+[[ "${1}" = "-h" ]] || [[ "${1}" = "--help" ]] && \
+    printf '%s\n' "Run with:" "    ./cvecheck.sh" "to print package health status to stdout. or:" "    ./cvecheck.sh > health.org" "and you can open output as org-mode file." \
+	|| guix_health
