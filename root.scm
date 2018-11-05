@@ -76,9 +76,11 @@
    "htop"
    ;;bzip2 ; "conflicting entry"
    ;; diffutils
+   "lvm2"
    "mupdf" ; pdf tools   
    "openssh" ; SSH access
-   "openssl@1.0.2n" ; 1.1.0h version is incompatible with the spice package
+   ;; "openssl@1.0.2n" ; 1.1.0h version is incompatible with the spice package
+   ;;"openssl"
    "pkg-config"
    "pinentry"
    "pinentry-tty"

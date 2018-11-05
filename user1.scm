@@ -1,4 +1,15 @@
 ;; -*- geiser-scheme-implementation: guile -*-
+
+(define build-packages
+  (list
+   "coreutils"
+   "gcc"
+   "gcc-toolchain"
+   "glibc"
+   "glibc-bootstrap"
+   "libpcap"
+   "libpthread-stubs"
+   "libstdc++"))
 (define audio-video-packages
   (list
    "alsa-lib"
@@ -20,14 +31,15 @@
 (define desktop-packages
   (list
    "arandr"
-   "compton"
+   ;; "compton" ; not using xmonad anymore on GuixSD
    "dconf-editor"   
    "gnome-tweak-tool"
    "gsettings-desktop-schemas"
    ;; "gcc-toolchain" ; xmonad
    ;; "ghc-xmonad-contrib"
    ;; "ghc"
-   ;; "ghc-network"   
+   ;; "ghc-network"
+   "glibc-utf8-locales"
    "libgcrypt" ; for compiling alock with something (see my-xmonad.sh)
    "linux-pam" ; for compiling alock with --enable-pam module, xmonad
    "libnotify"
@@ -35,7 +47,7 @@
    ;;"dmenu"	  
    ;;"dzen"
    ;;"feh"
-   ;;"enlightenment"
+   ;;"enlightenment" ; to avoid extra builds since I don't really use it much.
    ;; xfce4-pulseaudio-plugin
    "xinit"
    "xkill"
@@ -52,6 +64,7 @@
    ;; "xmobar"
    "xorg-server"
    ;; "xorg-xfontsel ; font"
+   "xpra"
    "xrandr"
    "xscreensaver" ;; xmonad
    "xsensors"
@@ -69,7 +82,7 @@
    "emacs-scheme-complete"
    "emacs-company"
    "emacs-emms" ;; emacs-emms
-   "emacs-emms-player-mpv"
+;;   "emacs-emms-player-mpv" ; superseded by emacs-emms
    "emacs-guix"
    "emacs-js2-mode"
    "emacs-lispy"
@@ -248,6 +261,7 @@
 (specifications->manifest
  (append (list "hello")
 	 audio-video-packages
+         build-packages
 	 desktop-packages
 	 emacs-packages
 	 font-packages

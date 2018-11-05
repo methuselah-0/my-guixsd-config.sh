@@ -6,6 +6,7 @@
 (use-modules 
  (gnu)
  (gnu system nss) ; nameservice switch
+ (gnu system locale) ; seems to be required for locale from now on
  (guix build-system ant)
  (guix build-system asdf)
  (guix build-system cargo)
@@ -34,6 +35,7 @@
  (guix store)
  (srfi srfi-1) ; for remove function "alist-delete"
  (srfi srfi-26)
+ (srfi srfi-34) 
  (ice-9 ftw)
  (guix monads))
 (use-service-modules
@@ -47,6 +49,7 @@
  mcron
  networking
  sddm
+ sound
  ssh
  version-control
  web
@@ -57,6 +60,7 @@
  autotools ;; autoconf and other build-packages
  bash	
  certs ; https etc.
+ cups
  cryptsetup
  display-managers ;; sddm
  enlightenment 
@@ -69,6 +73,7 @@
  linux ; btrfs-progs, inotify-tools
  mtools ;; exfat-utils
  perl
+ pulseaudio
  suckless ; suckless for slock screensaver service, dmenu and more 
  tls ; for gnutls etc.
  )
@@ -88,6 +93,9 @@
 (define fetch-calendars
   #~(job "5 * * * *"
 	 "/home/user1/bin/fetch-calendars.pl"))
+(define network-check
+  #~(job "5 * * * *"
+	 "curl ipinfo.io >/dev/null 2>/dev/null || herd restart networking"))
 (define %nginx-deploy-hook
   (program-file
    "nginx-deploy-hook"
@@ -191,6 +199,7 @@
                         (mount-point "/")
                         (type "btrfs")
                         (needed-for-boot? #t)
+			(options "subvolid=363,subvol=/snap2_rw")
                         (dependencies mapped-devices))
                       %base-file-systems))
 
@@ -227,7 +236,7 @@
 	     ;; Login screen
 	     sddm
 	     wayland
-             enlightenment
+             ;;enlightenment
 
              ;; xorg fonts
 ;;             font-util
@@ -274,11 +283,13 @@
   ;; the X11 log-in service, networking with Wicd, and more.
   (services (cons* 
              (gnome-desktop-service)
+             (service enlightenment-desktop-service-type)
              ;;(xfce-desktop-service)
              (console-keymap-service "sv-latin1")
-             ;;(slim-service) ; login screen
-             (sddm-service (sddm-configuration
-                            (display-server "wayland")))
+             (slim-service) ; login screen
+;;             (sddm-service (sddm-configuration
+;;                            (display-server "wayland")))
+;;                            (display-server "x11")))
              (service cups-service-type
 			 (cups-configuration
 			  (web-interface? #t)
@@ -292,6 +303,7 @@
                        (user "user1") ;; default is mpd
                        (port "6600"))) ;; 6600 is default
              (gpm-service)
+	     (service alsa-service-type)
              (service special-files-service-type %my-special-files)
              (screen-locker-service slock "slock")
              ;;		(lsh-service #:port-number 2222)
@@ -304,6 +316,7 @@
              ;; 	 (sysctl-configuration
              ;; 	  (settings '(("net.ipv4.ip_forward" . "1")))))
              (mcron-service (list garbage-collector-job
+                                  network-check
                                   updatedb-job))
              (service rottlog-service-type)		
              (service nginx-service-type %nginx-config)
@@ -316,7 +329,8 @@
              ;;(wicd-service) ; network service ;; provided by %desktop-services		
              (service network-manager-service-type (network-manager-configuration))
              (dbus-service) ; IPC or Inter-Process-Communication. ;; provided by %desktop-services
-             (service wpa-supplicant-service-type wpa-supplicant)		
+             ;; (service wpa-supplicant-service-type wpa-supplicant)
+             (service wpa-supplicant-service-type)		             
              (udisks-service) ;; also provided by %desktop-services
              (upower-service) ;; also provided by %desktop-services
              (colord-service) ;; also provided by %desktop-services
@@ -326,6 +340,16 @@
              (accountsservice-service) ;; also provided by %desktop-services
              (elogind-service #:config (elogind-configuration (handle-lid-switch 'ignore))) ;; also provided by %desktop-services
              (ntp-service #:allow-large-adjustment? #t) ;; network time protocol ;; also provided by %desktop-services
+;	     (modify-services
+;		(guix-service-type config => 
+;			(guix-configuration
+;			  (inherit config)
+;			  (substitute-urls
+;			    (cons *
+;			      "https://berlin.guixsd.org"
+;			      %default-substitute-urls))
+;			    (extra-options
+;			      '("--cores=1"))))) ; to avoid overheating from build-processes
              %base-services)) ; desktop services provide lots of default services.
   ;;	    %desktop-services )) ; desktop services provide lots of default services.		
   

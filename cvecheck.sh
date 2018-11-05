@@ -11,6 +11,7 @@ function guix_health()
     do
 	if grep " ${pkgline[0]}" /tmp/cve.txt >/dev/null 2>/dev/null
 	then
+	    version=("${pkgline[1]}")	    
 	    unset cves
 	    declare -a cves=()
 	    unset cvelinks
@@ -25,10 +26,10 @@ function guix_health()
 		    cvelinks+=("https://web.nvd.nist.gov/view/vuln/detail?vulnId=${cve}")
 		done < <( grep -o -E 'CVE-[0-9]{4}-[0-9]+' <<< "${line}")
 	    done < <(grep " ${pkgline[0]}" /tmp/cve.txt 2>/dev/null )
-	    version=("${pkgline[1]}")
-	    Vulns["${pkgline[0]//-/_}"]=$(declare -p cves && declare -p version && declare -p cvelinks)
+	    Vulns["${pkgline[0]//-/_}"]=$( declare -p cves && declare -p version && declare -p cvelinks )
 	fi
     done < <(guix package -I)
+    #declare -p
     for key in "${!Vulns[@]}"
     do	
 	eval "${Vulns[$key]}"
