@@ -2,14 +2,27 @@
 
 (define build-packages
   (list
+;   "gnu-make"
+   "autobuild" ; autotools   
+   "automake"
+   "autoconf"
+   "binutils"
    "coreutils"
    "gcc"
    "gcc-toolchain"
    "glibc"
    "glibc-bootstrap"
+   "guildhall" ; guile
+   "guile-bootstrap"
+   "libevent"
+   "libtool"
+   "make"
+   "m4"
+;   "module-import"
    "libpcap"
    "libpthread-stubs"
-   "libstdc++"))
+   "libstdc++"
+   "pkg-config"))
 (define audio-video-packages
   (list
    "alsa-lib"
@@ -43,7 +56,8 @@
    "libgcrypt" ; for compiling alock with something (see my-xmonad.sh)
    "linux-pam" ; for compiling alock with --enable-pam module, xmonad
    "libnotify"
-   "libreoffice" ; office suite   
+;   "libreoffice" ; office suite
+   "snap" ; to install anbox and then android apk packages 
    ;;"dmenu"	  
    ;;"dzen"
    ;;"feh"
@@ -152,7 +166,7 @@
 
 (define messaging-packages
   (list
-   "qtox" ;; tox FIXME
+   ;; "qtox" ;; tox FIXME
    "gajim" ;; xmpp FIXME   
    "weechat" ;; IRC
    "alpine" ;; smtp
@@ -164,6 +178,7 @@
    "cpulimit"   
    "file" ; findutils
    "gdb" ;; debugging (capture stdout from processes)
+   "gmp"
    ;;"gpgme" ;; currently has dependency that conflicts with libgcrypt
    "graphviz" ; pdf tools   
    "htop"
@@ -193,17 +208,19 @@
    "nmap" ; check ports etc. - network tool
    "wget"   
    "wicd"
-   "wireshark"
+   ;; temporarily commented due to compile time sucks "wireshark"
    "wpa-supplicant"
 ))
 
 (define programming-extra-packages
   (list
-   "geiser"
+   "emacs-geiser"
    "git"
    "ltrace"
    "node"   
    "perl"
+   "guile@2.0"
+   "guile-bash"
 ;; "python-3.6"
 ;;   "python" ;; is 3.6 version
    "python@2.7"
@@ -240,10 +257,10 @@
    "dnsmasq" ; virtualization
    "iptables" ; firewall, used for virtualization also
    "openvpn" ; virtualization, mktun
-   "qemu" ;; FIXME
+   ;; "qemu" ;; FIXME
    "xf86-video-qxl" ;; FIXME
    "xf86-video-fbdev" ;; FIXME   
-   "spice" ;; virtualization. Incompatible with openssl-next
+   ;; temporarily commented due to compile time sucks "spice" ;; virtualization. Incompatible with openssl-next
    ;; Server stack packages:
    ;; mariadb nginx php letsencrypt
    "mesa" ;; graphics
