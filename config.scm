@@ -93,6 +93,9 @@
 (define fetch-calendars
   #~(job "5 * * * *"
 	 "/home/user1/bin/fetch-calendars.pl"))
+;; (define fetch-calendars
+;;   #~ (job '(next-minute (range 0 60 5)) "/home/user1/bin/fetch-calendars.pl"))
+
 (define network-check
   #~(job "5 * * * *"
 	 "curl ipinfo.io >/dev/null 2>/dev/null || herd restart networking"))
@@ -340,17 +343,18 @@
              (accountsservice-service) ;; also provided by %desktop-services
              (elogind-service #:config (elogind-configuration (handle-lid-switch 'ignore))) ;; also provided by %desktop-services
              (ntp-service #:allow-large-adjustment? #t) ;; network time protocol ;; also provided by %desktop-services
-;	     (modify-services
-;		(guix-service-type config => 
-;			(guix-configuration
-;			  (inherit config)
-;			  (substitute-urls
-;			    (cons *
-;			      "https://berlin.guixsd.org"
-;			      %default-substitute-urls))
+	     (modify-services
+		(guix-service-type config => 
+			(guix-configuration
+			  (inherit config)
+			  (substitute-urls
+			    (cons *
+ "https://mirror.hydra.gnu.org" "https://mirror.guixsd.org" "ci.guix.gnu.org"
+			      "https://berlin.guixsd.org"
+			      %default-substitute-urls))))
 ;			    (extra-options
 ;			      '("--cores=1"))))) ; to avoid overheating from build-processes
-             %base-services)) ; desktop services provide lots of default services.
+             %base-services))) ; desktop services provide lots of default services.
   ;;	    %desktop-services )) ; desktop services provide lots of default services.		
   
   ;; Allow resolution of '.local' host names with mDNS.

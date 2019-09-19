@@ -1,5 +1,37 @@
 ;; -*- geiser-scheme-implementation: guile -*-
-
+;; (use-modules (guix packages)
+;;              (guix download)
+;; ;             (guix gexp)             
+;;              (guix build-system gnu)
+;;              (guix licenses))
+;; (package
+;;  (name "prips")
+;;  (version "1.1.1")
+;;  (source
+;;   (origin
+;;    (method url-fetch)
+;;    (uri (string-append "https://devel.ringlet.net/files/sys/" name "/" name "-" version ".tar.xz"))
+;;    (sha256
+;;     (base32 "1a33vbl4w603mk6mm5r3vhk87fy3dfk5wdpch0yd3ncbkg3fmvqn"))))
+;;  (build-system gnu-build-system)
+;;  (arguments
+;;   '(#:make-flags (list "CC=gcc")
+;;     #:phases (modify-phases
+;;               %standard-phases
+;;               (delete 'configure)
+;;               (delete 'check)
+;;               (replace 'install
+;;                        (lambda _
+;;                          (let*
+;;                              ((bin-dir  (string-append %output "/bin"))
+;;                               (bin-file (string-append bin-dir "/prips")))
+;;                            (mkdir-p bin-dir)
+;;                            (copy-file "prips" bin-file)
+;;                            (chmod bin-file #o700)))))))
+;;  (synopsis "Tool that prints the IP addresses in a given range")
+;;  (description "Prips can be used to print all of the IP addresses in a given range. This allows the enhancement of tools only work on one host at a time (e.g. whois).")
+;;  (home-page "https://devel.ringlet.net/sysutils/prips/")
+;;  (license gpl2))
 (define build-packages
   (list
 ;   "gnu-make"
@@ -204,8 +236,10 @@
   (list
    "aircrack-ng"
    "curl"   
+   "netcat"
    "net-tools"
    "nmap" ; check ports etc. - network tool
+;   "prips"
    "wget"   
    "wicd"
    ;; temporarily commented due to compile time sucks "wireshark"
@@ -255,6 +289,7 @@
   (list
    "bridge-utils" ; virtualization, brctl   
    "dnsmasq" ; virtualization
+   "docker"
    "iptables" ; firewall, used for virtualization also
    "openvpn" ; virtualization, mktun
    ;; "qemu" ;; FIXME
@@ -277,16 +312,16 @@
 
 (specifications->manifest
  (append (list "hello")
-	 audio-video-packages
-         build-packages
-	 desktop-packages
-	 emacs-packages
-	 font-packages
-	 messaging-packages
-	 misc-utils-packages
+	 ;; audio-video-packages
+         ;; build-packages
+	 ;; desktop-packages
+	 ;; emacs-packages
+	 ;; font-packages
+	 ;; messaging-packages
+	 ;; misc-utils-packages
 	 net-tools-packages
-	 programming-extra-packages
-	 terminal-packages
-	 virtualization-packages
-	 web-packages
+	 ;; programming-extra-packages
+	 ;; terminal-packages
+	 ;; virtualization-packages
+	 ;; web-packages
 	 ))
