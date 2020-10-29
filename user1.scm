@@ -1,327 +1,311 @@
 ;; -*- geiser-scheme-implementation: guile -*-
-;; (use-modules (guix packages)
-;;              (guix download)
-;; ;             (guix gexp)             
-;;              (guix build-system gnu)
-;;              (guix licenses))
-;; (package
-;;  (name "prips")
-;;  (version "1.1.1")
-;;  (source
-;;   (origin
-;;    (method url-fetch)
-;;    (uri (string-append "https://devel.ringlet.net/files/sys/" name "/" name "-" version ".tar.xz"))
-;;    (sha256
-;;     (base32 "1a33vbl4w603mk6mm5r3vhk87fy3dfk5wdpch0yd3ncbkg3fmvqn"))))
-;;  (build-system gnu-build-system)
-;;  (arguments
-;;   '(#:make-flags (list "CC=gcc")
-;;     #:phases (modify-phases
-;;               %standard-phases
-;;               (delete 'configure)
-;;               (delete 'check)
-;;               (replace 'install
-;;                        (lambda _
-;;                          (let*
-;;                              ((bin-dir  (string-append %output "/bin"))
-;;                               (bin-file (string-append bin-dir "/prips")))
-;;                            (mkdir-p bin-dir)
-;;                            (copy-file "prips" bin-file)
-;;                            (chmod bin-file #o700)))))))
-;;  (synopsis "Tool that prints the IP addresses in a given range")
-;;  (description "Prips can be used to print all of the IP addresses in a given range. This allows the enhancement of tools only work on one host at a time (e.g. whois).")
-;;  (home-page "https://devel.ringlet.net/sysutils/prips/")
-;;  (license gpl2))
-(define build-packages
-  (list
-;   "gnu-make"
-   "autobuild" ; autotools   
-   "automake"
-   "autoconf"
-   "binutils"
-   "coreutils"
-   "gcc"
-   "gcc-toolchain"
-   "glibc"
-   "glibc-bootstrap"
-   "guildhall" ; guile
-   "guile-bootstrap"
-   "libevent"
-   "libtool"
-   "make"
-   "m4"
-;   "module-import"
-   "libpcap"
-   "libpthread-stubs"
-   "libstdc++"
-   "pkg-config"))
-(define audio-video-packages
-  (list
-   "alsa-lib"
-   "alsa-plugins"
-   "alsa-utils"
-   "espeak"
-   "ffmpeg" ;; Audio fromat converter
-   "flac" ;; flac audio format
-   "mpd" ; music player daemon FIXME
-   "mpd-mpc" ; cli for mpd
-   "ncmpcpp" ; mpd music daemon, mpd cli, and mpd-client.   
-   "mpv" ; Video-player   
-   "pulseaudio"
-   "ponymix"
-   "pavucontrol"
-   "vorbis-tools"
-   "youtube-dl"
-   ))
-(define desktop-packages
-  (list
-   "arandr"
-   ;; "compton" ; not using xmonad anymore on GuixSD
-   "dconf-editor"   
-   "gnome-tweak-tool"
-   "gsettings-desktop-schemas"
-   ;; "gcc-toolchain" ; xmonad
-   ;; "ghc-xmonad-contrib"
-   ;; "ghc"
-   ;; "ghc-network"
-   "glibc-utf8-locales"
-   "libgcrypt" ; for compiling alock with something (see my-xmonad.sh)
-   "linux-pam" ; for compiling alock with --enable-pam module, xmonad
-   "libnotify"
-;   "libreoffice" ; office suite
-   "snap" ; to install anbox and then android apk packages 
-   ;;"dmenu"	  
-   ;;"dzen"
-   ;;"feh"
-   ;;"enlightenment" ; to avoid extra builds since I don't really use it much.
-   ;; xfce4-pulseaudio-plugin
-   "xinit"
-   "xkill"
-   "setxkbmap"
-   "xauth"
-   "xbacklight"
-   "xclip" ;; getPass etc.
-   "xdg-utils"
-   "xdotool" ;; xmonad window manager related
-   "xeyes" ;; wayland vs X
-   "xlsfonts" ; font
-   "xmodmap" ;; xmonad
-   ;; "xmonad"
-   ;; "xmobar"
-   "xorg-server"
-   ;; "xorg-xfontsel ; font"
-   "xpra"
-   "xrandr"
-   "xscreensaver" ;; xmonad
-   "xsensors"
-   "xset" ;; xorg display server related
-   "xsetroot"   
-   ))
+;; INFO: make sure to add job.guile and mcron & in ~/.profile
 
-(define emacs-packages
-;;  (specifications->manifest
+(define non-sorted-packages
   (list
-   "emacs"
-   "emacs-ag"
-   "emacs-auto-complete"
-   "emacs-bash-completion"
-   "emacs-scheme-complete"
-   "emacs-company"
-   "emacs-emms" ;; emacs-emms
-;;   "emacs-emms-player-mpv" ; superseded by emacs-emms
-   "emacs-guix"
-   "emacs-js2-mode"
-   "emacs-lispy"
-   "emacs-nginx-mode"
-   "emacs-org"
-   "emacs-org2web"
-   "emacs-org-bullets"
-   "emacs-org-contrib"
-   "emacs-org-tree-slide" ;; emacs-org-tree-slide
-;;   "emacs-paredit"        ;; emacs-paredit
-   "emacs-php-mode"
-   "emacs-pdf-tools"
-   "emacs-rainbow-delimiters"
-   "emacs-rudel"
-   "emacs-scheme-complete"
-   "emacs-w3m"
-   "emacs-wget"
-   "emacs-xmlgen"
-   ))
+"docker"
+"cabal-install"
+"cairo"
 
-(define font-packages
-  (list
-             ;; System fonts
-             "font-bitstream-vera"
-             "font-dejavu"
-             "font-gnu-freefont-ttf"
-             "font-gnu-unifont"
-             "gs-fonts"
-             "font-hack" ;; glyphs             
-             "font-terminus"
-             "font-abattis-cantarell" ;; font-abattis-cantarell
-             "font-anonymous-pro"
-             "font-awesome"
-             
-             "font-fantasque-sans"
-             "font-fira-mono"
-             "font-go"
-             "font-google-material-design-icons"
-             "font-google-noto"
-             "font-google-roboto"
-             
-             "font-inconsolata"
-             "font-liberation"
-             "font-linuxlibertine" ;; font-linux-libertine
-             "font-mathjax"
-             "font-rachana"
-             "font-adobe-source-code-pro"
-             "font-tamzen"
-             
-             "font-tex-gyre"
-             "font-ubuntu"
-             "font-un"
-             ;; xorg fonts
-;;             font-util
-;;             fontconfig
-;;             font-mutt-misc
-             ;; "libxft" ;; xft fonts
-             ;; "ghc-x11-xft"
-             ;; "libxfont" ; xmonad
-             ;; "ftgl" ; uses Freetype2 to simplify rendering fonts in OpenGL applications
+;; BUILD TOOLS
+"autobuild"
+"autoconf"
+"automake"
+"binutils"
 
-   
-    "pango"
-    "perl-pango"
-    "cairo"
-   ))
+;; ADMIN-tools
+"beep"
+"cpulimit"
+"cowsay"
+"cpio"
+"audit"
 
-(define messaging-packages
-  (list
-   ;; "qtox" ;; tox FIXME
-   "gajim" ;; xmpp FIXME   
-   "weechat" ;; IRC
-   "alpine" ;; smtp
-   ))
+;; DESKTOP
+"dconf-editor"
+"arandr"
 
-(define misc-utils-packages
-  (list
-   "audit"
-   "cpulimit"   
-   "file" ; findutils
-   "gdb" ;; debugging (capture stdout from processes)
-   "gmp"
-   ;;"gpgme" ;; currently has dependency that conflicts with libgcrypt
-   "graphviz" ; pdf tools   
-   "htop"
-   ;;bzip2 ; "conflicting entry"
-   ;; diffutils
-   "mupdf" ; pdf tools   
-   "openssh" ; SSH access
-;   "openssl@1.0.2n" ; 1.1.0h version is incompatible with the spice package
-;   "openssl" ; spice package provides openssl but older version which should be fine.
-   "pkg-config"
-   "pinentry"
-   "pinentry-tty"
-   "pinentry-qt"
-   ;;pinentry-gtk
-   "recutils" ;; location: databases   
-   "rsync" ; rsync   
-   "texinfo"
-   "unzip"   
-   "zip"
-   ))
+;; MISC
+"icecat" ;; browser
+"nyxt" ;; browser
+"ungoogled-chromium" ;; browsers
+"alpine" ;; email
+"mcron" ;; scheduled commands, see job.guile
+;;"gajim" ;; build fails
+"ccrypt"
+"elfutils"
+"ffmpeg"
+"file"
+"flac"
+"alsa-lib"
+"alsa-plugins"
+"alsa-utils"
 
-(define net-tools-packages
-  (list
-   "aircrack-ng"
-   "curl"   
-   "netcat"
-   "net-tools"
-   "nmap" ; check ports etc. - network tool
-;   "prips"
-   "wget"   
-   "wicd"
-   ;; temporarily commented due to compile time sucks "wireshark"
-   "wpa-supplicant"
+;; NET-TOOLS
+"dnsmasq"
+"curl"
+"bridge-utils"
+"bind"
+"aircrack-ng"
+
+;; TERMINAL
+"bash-completion"
+"dvtm"
+"abduco"
+"fbcat"
+"fbida"
+"feh"
+"gash"
+
+;; EMACS
+"emacs"
+;; dependencies for vcard2org-contacts.py
+"python2"
+"python2-dateutil"
+"python2-vobject"
+;; dependencies for org-schedule.pl
+"perl-data"
+"perl-datetime-format-ical"
+"perl-data-ical"
+"perl-devel-repl"
+
+;; espeak to be used for notifications with org-agend (ical2org cronjob)
+"espeak-ng"
+"espeak"
+;; for calendar stuff
+"emacs-org-caldav"
+
+;; EMACS-GENERAL
+"emacs-ag"
+"emacs-auto-complete"
+"emacs-bash-completion"
+"emacs-browse-at-remote"
+"emacs-company"
+"emacs-deferred"
+"emacs-emms"
+"emacs-flycheck"
+"emacs-geiser"
+"emacs-guix"
+"emacs-jedi"
+"emacs-js2-mode"
+"emacs-lispy"
+"emacs-nginx-mode"
+"emacs-org"
+"emacs-org2web"
+"emacs-org-bullets"
+"emacs-org-contrib"
+"emacs-org-re-reveal"
+"emacs-org-reveal"
+"emacs-org-tree-slide"
+"emacs-pdf-tools"
+"emacs-php-mode"
+"emacs-rainbow-delimiters"
+"emacs-realgud"
+"emacs-rudel"
+"emacs-scheme-complete"
+"emacs-w3m"
+"emacs-wget"
+"emacs-xmlgen"
+
+;; FONTS
+"font-abattis-cantarell"
+"font-adobe-source-code-pro"
+"font-anonymous-pro"
+"font-awesome"
+"font-bitstream-vera"
+"font-dejavu"
+"font-fantasque-sans"
+"font-fira-mono"
+"font-gnu-freefont"
+"font-gnu-unifont"
+"font-go"
+"font-google-material-design-icons"
+"font-google-noto"
+"font-google-roboto"
+"font-hack"
+"font-inconsolata"
+"font-liberation"
+"font-linuxlibertine"
+"font-mathjax"
+"font-rachana"
+"font-tamzen"
+"font-terminus"
+"font-tex-gyre"
+"font-ubuntu"
+"font-un"
+;;"gcc" ; has been superseded by gcc-toolchain
+"gcc-toolchain"
+"gdb"
+"gettext"
+;;"ghc" ;; tests fail
+;;"ghc-digest"
+;;"ghc-pandoc-citeproc"
+;;"ghc-texmath"
+;;"ghc-zlib"
+;;"ghc-zlib-bindings"
+;;"ghc-zstd"
+"git"
+"glibc"
+"glibc-bootstrap"
+"glibc-utf8-locales"
+"gmp"
+"gnome-tweaks"
+"gnupg"
+"graphviz"
+"gsettings-desktop-schemas"
+"gs-fonts"
+"haunt"
+"htop"
+"icecat"
+"icedtea"
+"imagemagick"
+"ipcalc"
+"iptables"
+"js-mathjax"
+
+"libbsd"
+"libelf"
+"libevent"
+"libffi"
+"libgcrypt"
+"libhandy"
+"libnotify"
+"libpcap"
+"libpthread-stubs"
+"libreoffice"
+;;"libstdc++" ; doesn't exist
+"libstdc++-doc"
+"libtool"
+"libxml2"
+"libxml2-xpath0"
+"linux-pam"
+"llvm"
+"lsh"
+"ltrace"
+"lynx"
+"m4"
+"make"
+"mesa"
+"mesa-utils"
+"moreutils"
+"mpd"
+"mpd-mpc"
+"mps-youtube"
+"mpv"
+"mupdf"
+"ncmpcpp"
+"netcat"
+"net-tools"
+"next"
+"nmap"
+"node"
+"nss-certs"
+"openlibm"
+"openssh"
+"openvpn"
+"pango"
+"pavucontrol"
+"pcre"
+"pcre2"
+"perl"
+"perl-pango"
+"pinentry"
+"pinentry-qt"
+"pinentry-tty"
+"pkg-config"
+"ponymix"
+"postgresql"
+"pulseaudio"
+;; "qbittorrent" ;; build fail
+"recutils"
+"rsync"
+"rxvt-unicode"
+"screen"
+"scrot"
+"setxkbmap"
+"shellcheck"
+"snap"
+"strace"
+"terminology"
+"termite"
+"texinfo"
+"texlive"
+"texlive-latex-preview"
+"tree"
+"unclutter"
+"unzip"
+"vis"
+"vorbis-tools"
+
+"weechat"
+
+"wget"
+"wicd"
+"wpa-supplicant"
+
+"xauth"
+"xbacklight"
+"xclip"
+"xdg-utils"
+"xdotool"
+"xeus"
+"xeyes"
+"xf86-video-fbdev"
+"xf86-video-qxl"
+"xinit"
+"xkill"
+"xlsfonts"
+"xmlstarlet"
+"xmodmap"
+"xorg-server"
+"xpra"
+"xrandr"
+"xrdb"
+"xscreensaver"
+"xsensors"
+"xset"
+"xsetroot"
+"youtube-dl"
+"zip"
+"zlib"
+
+"ccrypt"
+
+;; BASH DEV-ENVIRONMENT PACKAGES
+"bash-coding-utils.sh"
+"coreutils"
+
+;; GUILE DEV-ENVIRONMENT PACKAGES
+"guildhall"
+"guile@2.2"
+"guile2.0-haunt"
+"guile-base64"
+;;"guile-bash"
+"guile-bash-2.2"
+"guile-bootstrap"
+"guile-config"
+"guile-csv"
+"guile-curl"
+"guile-dsv"
+"guile-pfds"
+"guile-sjson"
+;;"guile-stis-parser" ; later version via "bash-coding-utils.sh"
+"guix-jupyter"
+
+;; PYTHON DEV-ENVIRONMENT PACKAGES, minus the emacs one
+"python-bash-kernel" ;; must run python -m bash_kernel first
+"jupyter-next"
+"python-pip"
+"python-netaddr"
+"python"
+"python-nbdev-org-babel" ;; should install ruby to get gem
+"python-trepan3k"
+"python-pylint"
+"python-pydotplus"
+"python-pycrypto"
+"fwknop"
+"python-virtualenv" ;; to run in emacs M-x jedi:install-server
 ))
-
-(define programming-extra-packages
-  (list
-   "emacs-geiser"
-   "git"
-   "ltrace"
-   "node"   
-   "perl"
-   "guile@2.0"
-   "guile-bash"
-;; "python-3.6"
-;;   "python" ;; is 3.6 version
-   "python@2.7"
-   "python-pycrypto"   
-   "python2-dateutil"
-   "python2-vobject" ;;python
-   "shellcheck"
-   "strace"
-   ))
-
-(define terminal-packages
-  (list
-   "abduco"    
-   "bash-completion"
-   "bc"
-   "beep"
-   "dvtm"
-   "fbcat"
-   "fbida" ; framebuffer graphics
-   ;; kmscon ;; build fails (including on hydra since 2017-12-05)   
-   "rxvt-unicode"
-   "screen"
-   "termite" ;; wayland-native terminal
-   "tree" ; terminal and console
-;;   "ttylog" ;; doesn't exist
-   "unclutter"   
-   "vis"
-   ;; terminology ; terminals FIXME             
-   ))
-
-(define virtualization-packages
-  (list
-   "bridge-utils" ; virtualization, brctl   
-   "dnsmasq" ; virtualization
-   "docker"
-   "iptables" ; firewall, used for virtualization also
-   "openvpn" ; virtualization, mktun
-   ;; "qemu" ;; FIXME
-   "xf86-video-qxl" ;; FIXME
-   "xf86-video-fbdev" ;; FIXME   
-   ;; temporarily commented due to compile time sucks "spice" ;; virtualization. Incompatible with openssl-next
-   ;; Server stack packages:
-   ;; mariadb nginx php letsencrypt
-   "mesa" ;; graphics
-   "mesa-utils" ;; graphics
-   ;; "gtkglext" ;; make gtk-widgets OpenGL compatible, etc.
-   ))
-(define web-packages
-  (list
-   "icecat" ; browser
-   "icedtea" ; browser plugin
-   "conkeror"
-   "lynx"   
-   ))
 
 (specifications->manifest
  (append (list "hello")
-	 ;; audio-video-packages
-         ;; build-packages
-	 ;; desktop-packages
-	 ;; emacs-packages
-	 ;; font-packages
-	 ;; messaging-packages
-	 ;; misc-utils-packages
-	 net-tools-packages
-	 ;; programming-extra-packages
-	 ;; terminal-packages
-	 ;; virtualization-packages
-	 ;; web-packages
-	 ))
+          non-sorted-packages))
