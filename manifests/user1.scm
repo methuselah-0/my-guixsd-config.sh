@@ -387,8 +387,21 @@
    ;;"guile-stis-parser" ; later version via "bash-coding-utils.sh"
    "guix-jupyter"
 ))
-(specifications->manifest
- (append (list "hello")
+;; (specifications->manifest
+;;  (append (list "hello")
+;;          ;;build-pkgs
+;;          admin-pkgs
+;;          desktop-pkgs
+;;          misc-pkgs
+;;          net-pkgs
+;;          terminal-pkgs
+;;          emacs-pkgs
+;;          font-pkgs
+;;          python-dev-pkgs
+;;          guile-dev-pkgs
+;;           '()
+;;           ))
+(append (list "hello")
          ;;build-pkgs
          admin-pkgs
          desktop-pkgs
@@ -398,6 +411,4 @@
          emacs-pkgs
          font-pkgs
          python-dev-pkgs
-         guile-dev-pkgs
-          '()
-          ))
+         guile-dev-pkgs)
