@@ -389,7 +389,7 @@
 ))
 (specifications->manifest
  (append (list "hello")
-         ;;build-pkgs
+         build-pkgs
          admin-pkgs
          desktop-pkgs
          misc-pkgs
