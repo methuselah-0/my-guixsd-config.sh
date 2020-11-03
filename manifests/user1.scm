@@ -388,7 +388,7 @@
    "guix-jupyter"
 ))
 (specifications->manifest
- (append (list "hello")
+ (append (list "hello" "xeyes")
          build-pkgs
          admin-pkgs
          desktop-pkgs
