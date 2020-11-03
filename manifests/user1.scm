@@ -158,7 +158,7 @@
    "xmlstarlet"   
    "moreutils"   
    "git"   
-   ;;"bash-coding-utils.sh"
+   "bash-coding-utils.sh"
    "libhandy"
    "pcre"
    "pcre2"
