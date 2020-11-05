@@ -368,6 +368,8 @@
    "python-pycrypto"
    "fwknop"
    "python-virtualenv" ;; to run in emacs M-x jedi:install-server
+   "python-flask-rest-jsonapi"
+   "python-sqlalchemy"
    "gdb"))
 (define guile-dev-pkgs
   (list    ;; GUILE DEV-ENVIRONMENT PACKAGES
